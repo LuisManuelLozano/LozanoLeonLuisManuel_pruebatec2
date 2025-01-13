@@ -1,0 +1,11 @@
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\ControladoraPersistencia.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\exceptions\IllegalOrphanException.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\exceptions\PreexistingEntityException.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\logica\Turno.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\servlets\TurnoSv.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\exceptions\NonexistentEntityException.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\servlets\CiudadanoSv.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\logica\ControladoraLogica.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\logica\Ciudadano.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\CiudadanoJpaController.java
+C:\Users\HP\Documents\NetBeansProjects\Turnero1\src\main\java\persistencia\TurnoJpaController.java
