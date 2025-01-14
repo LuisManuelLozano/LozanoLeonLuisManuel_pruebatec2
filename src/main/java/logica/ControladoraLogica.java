@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.Optional;
 
 public class ControladoraLogica {
-    ControladoraPersistencia controlPersistencia = new ControladoraPersistencia();
+
+    private ControladoraPersistencia controlPersistencia = new ControladoraPersistencia();
 
     // Métodos para ciudadanos
     public void crearCiudadano(Ciudadano ciudadano) {

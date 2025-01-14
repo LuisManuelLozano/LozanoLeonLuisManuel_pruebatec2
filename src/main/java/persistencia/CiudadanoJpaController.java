@@ -14,20 +14,22 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 public class CiudadanoJpaController implements Serializable {
+
+    private EntityManagerFactory emf = null;
+
     public CiudadanoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
 
-    private EntityManagerFactory emf = null;
-
-    public CiudadanoJpaController(){
-        emf = Persistence.createEntityManagerFactory("Luis_Turnero1_war_1.0-SNAPSHOTPU");
+    public CiudadanoJpaController() {
+        this.emf = Persistence.createEntityManagerFactory("Luis_Turnero1_war_1.0-SNAPSHOTPU");
     }
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
+    // Método para crear un nuevo ciudadano
     public void create(Ciudadano ciudadano) {
         EntityManager em = null;
         try {
@@ -42,6 +44,7 @@ public class CiudadanoJpaController implements Serializable {
         }
     }
 
+    // Método para editar un ciudadano existente
     public void edit(Ciudadano ciudadano) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
@@ -54,7 +57,7 @@ public class CiudadanoJpaController implements Serializable {
             if (msg == null || msg.length() == 0) {
                 Long id = ciudadano.getId();
                 if (findCiudadano(id) == null) {
-                    throw new NonexistentEntityException("The ciudadano with id " + id + " no longer exists.");
+                    throw new NonexistentEntityException("El ciudadano con id " + id + " ya no existe.");
                 }
             }
             throw ex;
@@ -65,6 +68,7 @@ public class CiudadanoJpaController implements Serializable {
         }
     }
 
+    // Método para eliminar un ciudadano por ID
     public void destroy(Long id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
@@ -75,7 +79,7 @@ public class CiudadanoJpaController implements Serializable {
                 ciudadano = em.getReference(Ciudadano.class, id);
                 ciudadano.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The ciudadano with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("El ciudadano con id " + id + " ya no existe.", enfe);
             }
             em.remove(ciudadano);
             em.getTransaction().commit();
@@ -86,10 +90,12 @@ public class CiudadanoJpaController implements Serializable {
         }
     }
 
+    // Método para encontrar todas las entidades Ciudadano
     public List<Ciudadano> findCiudadanoEntities() {
         return findCiudadanoEntities(true, -1, -1);
     }
 
+    // Método para encontrar un rango de entidades Ciudadano
     public List<Ciudadano> findCiudadanoEntities(int maxResults, int firstResult) {
         return findCiudadanoEntities(false, maxResults, firstResult);
     }
@@ -110,6 +116,7 @@ public class CiudadanoJpaController implements Serializable {
         }
     }
 
+    // Método para encontrar un ciudadano por ID
     public Optional<Ciudadano> findCiudadano(Long id) {
         EntityManager em = getEntityManager();
         try {
@@ -119,6 +126,7 @@ public class CiudadanoJpaController implements Serializable {
         }
     }
 
+    // Método para contar el número de ciudadanos
     public int getCiudadanoCount() {
         EntityManager em = getEntityManager();
         try {

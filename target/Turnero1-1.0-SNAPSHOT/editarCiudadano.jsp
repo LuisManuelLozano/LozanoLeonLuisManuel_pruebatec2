@@ -4,17 +4,21 @@
 <html>
 <head>
     <title>Editar Ciudadano</title>
+    <!-- Incluye Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
     <h1 class="mb-4">Editar Ciudadano</h1>
     <a href="index.jsp" class="btn btn-secondary mb-4">Volver a Inicio</a>
     <%
+        // Obtiene el ciudadano desde el atributo de la solicitud
         Ciudadano ciudadano = (Ciudadano) request.getAttribute("ciudadano");
         boolean isEdit = ciudadano != null;
     %>
     <form action="CiudadanoSv" method="post">
+        <!-- Campo oculto para la acción (crear o editar) -->
         <input type="hidden" name="accion" value="<%= isEdit ? "editar" : "crear" %>">
+        <!-- Campo oculto para el ID del ciudadano (solo para edición) -->
         <input type="hidden" name="id" value="<%= isEdit ? ciudadano.getId() : "" %>">
         <div class="form-group">
             <label>Nombre:</label>
@@ -34,9 +38,11 @@
         </div>
         <button type="submit" class="btn btn-primary"><%= isEdit ? "Actualizar" : "Crear" %></button>
     </form>
+    <!-- Incluye Bootstrap JS y sus dependencias -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 

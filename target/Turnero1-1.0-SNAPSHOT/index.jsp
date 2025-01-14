@@ -8,23 +8,28 @@
 </head>
 <body class="container mt-5">
     <h1 class="mb-4">Menú Principal</h1>
+    <!-- Formulario para crear un nuevo ciudadano -->
     <form action="editarCiudadano.jsp" method="get">
         <button type="submit" class="btn btn-primary btn-block">Crear Nuevo Ciudadano</button>
     </form>
+    <!-- Formulario para listar ciudadanos -->
     <form action="CiudadanoSv" method="get">
         <input type="hidden" name="accion" value="listar">
         <button type="submit" class="btn btn-primary btn-block mt-2">Listar Ciudadanos</button>
     </form>
+    <!-- Formulario para crear un nuevo turno -->
     <form action="TurnoSv" method="get">
         <input type="hidden" name="accion" value="crear">
         <button type="submit" class="btn btn-primary btn-block mt-2">Crear Turno</button>
     </form>
+    <!-- Formulario para buscar turnos por fecha -->
     <form action="TurnoSv" method="get" class="mt-3">
         <label>Buscar Turnos por Fecha:</label><br>
         <input type="date" name="fecha" class="form-control" required>
         <input type="hidden" name="accion" value="listarPorFecha">
         <button type="submit" class="btn btn-primary mt-2">Buscar</button>
     </form>
+    <!-- Formulario para buscar turnos por fecha y estado -->
     <form action="TurnoSv" method="get" class="mt-3">
         <label>Buscar Turnos por Fecha y Estado:</label><br>
         <input type="date" name="fecha" class="form-control" required>
@@ -41,5 +46,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
 

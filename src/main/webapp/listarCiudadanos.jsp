@@ -25,7 +25,8 @@
         <tbody>
             <%
                 List<Ciudadano> listaCiudadanos = (List<Ciudadano>) request.getAttribute("listaCiudadanos");
-                for (Ciudadano ciudadano : listaCiudadanos) {
+                if (listaCiudadanos != null) {
+                    for (Ciudadano ciudadano : listaCiudadanos) {
             %>
             <tr>
                 <td><%= ciudadano.getId() %></td>
@@ -39,6 +40,7 @@
                 </td>
             </tr>
             <%
+                    }
                 }
             %>
         </tbody>
@@ -48,5 +50,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
 

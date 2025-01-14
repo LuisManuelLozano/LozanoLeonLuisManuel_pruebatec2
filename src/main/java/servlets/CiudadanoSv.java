@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @WebServlet(name = "CiudadanoSv", urlPatterns = {"/CiudadanoSv"})
 public class CiudadanoSv extends HttpServlet {
+
+    // Instancia de la controladora lógica
     ControladoraLogica controlLogica = new ControladoraLogica();
 
     @Override
@@ -20,12 +22,15 @@ public class CiudadanoSv extends HttpServlet {
         String accion = request.getParameter("accion");
         try {
             if ("listar".equals(accion)) {
+                // Listar todos los ciudadanos
                 List<Ciudadano> listaCiudadanos = controlLogica.traerCiudadanos();
                 request.setAttribute("listaCiudadanos", listaCiudadanos);
                 request.getRequestDispatcher("listarCiudadanos.jsp").forward(request, response);
             } else if ("crear".equals(accion)) {
-                // LÃ³gica para crear ciudadano
+                // Lógica para redirigir al formulario de creación de ciudadano
+                request.getRequestDispatcher("crearCiudadano.jsp").forward(request, response);
             } else if ("editar".equals(accion)) {
+                // Redirigir al formulario de edición con datos del ciudadano pre-rellenados
                 Long id = Long.parseLong(request.getParameter("id"));
                 Optional<Ciudadano> ciudadanoOpt = controlLogica.traerCiudadano(id);
                 if (ciudadanoOpt.isPresent()) {
@@ -35,12 +40,16 @@ public class CiudadanoSv extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ciudadano no encontrado");
                 }
             } else if ("eliminar".equals(accion)) {
+                // Eliminar un ciudadano y redirigir a la lista de ciudadanos
                 Long id = Long.parseLong(request.getParameter("id"));
                 controlLogica.eliminarCiudadano(id);
                 response.sendRedirect("CiudadanoSv?accion=listar");
+            } else {
+                // Parámetro de acción no válido
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida");
             }
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID invÃ¡lido");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error interno del servidor");
         }
@@ -51,6 +60,7 @@ public class CiudadanoSv extends HttpServlet {
         String accion = request.getParameter("accion");
         try {
             if ("crear".equals(accion)) {
+                // Crear un nuevo ciudadano
                 String nombre = Optional.ofNullable(request.getParameter("nombre")).orElse("");
                 String apellido = Optional.ofNullable(request.getParameter("apellido")).orElse("");
                 String dni = Optional.ofNullable(request.getParameter("dni")).orElse("");
@@ -68,6 +78,7 @@ public class CiudadanoSv extends HttpServlet {
                 controlLogica.crearCiudadano(nuevoCiudadano);
                 response.sendRedirect("CiudadanoSv?accion=listar");
             } else if ("editar".equals(accion)) {
+                // Editar un ciudadano existente
                 Long id = Long.parseLong(request.getParameter("id"));
                 String nombre = Optional.ofNullable(request.getParameter("nombre")).orElse("");
                 String apellido = Optional.ofNullable(request.getParameter("apellido")).orElse("");
@@ -91,12 +102,16 @@ public class CiudadanoSv extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ciudadano no encontrado");
                 }
             } else if ("eliminar".equals(accion)) {
+                // Eliminar un ciudadano
                 Long id = Long.parseLong(request.getParameter("id"));
                 controlLogica.eliminarCiudadano(id);
                 response.sendRedirect("CiudadanoSv?accion=listar");
+            } else {
+                // Parámetro de acción no válido
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida");
             }
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID invÃ¡lido");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -104,6 +119,8 @@ public class CiudadanoSv extends HttpServlet {
         }
     }
 }
+
+
 
 
 

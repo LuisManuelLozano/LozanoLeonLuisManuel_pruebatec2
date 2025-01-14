@@ -17,51 +17,71 @@ import java.util.Optional;
 
 @WebServlet(name = "TurnoSv", urlPatterns = {"/TurnoSv"})
 public class TurnoSv extends HttpServlet {
+
+    // Instancia de la controladora lógica
     ControladoraLogica controlLogica = new ControladoraLogica();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getParameter("accion");
         try {
-            if ("crear".equals(accion)) {
-                List<Ciudadano> listaCiudadanos = controlLogica.traerCiudadanos();
-                request.setAttribute("listaCiudadanos", listaCiudadanos);
-                request.getRequestDispatcher("crearTurno.jsp").forward(request, response);
-            } else if ("listar".equals(accion)) {
-                List<Turno> listaTurnos = controlLogica.traerTurnos();
-                request.setAttribute("listaTurnos", listaTurnos);
-                request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
-            } else if ("listarPorFecha".equals(accion)) {
-                String fechaString = request.getParameter("fecha");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fecha = dateFormat.parse(fechaString);
-                List<Turno> listaTurnos = controlLogica.traerTurnosPorFecha(fecha);
-                request.setAttribute("listaTurnos", listaTurnos);
-                request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
-            } else if ("listarPorFechaYEstado".equals(accion)) {
-                String fechaString = request.getParameter("fecha");
-                String estadoString = request.getParameter("estado");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fecha = dateFormat.parse(fechaString);
-                Turno.Atendido estado = Turno.Atendido.valueOf(estadoString);
-                List<Turno> listaTurnos = controlLogica.traerTurnosPorFechaYEstado(fecha, estado);
-                request.setAttribute("listaTurnos", listaTurnos);
-                request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
-            } else if ("editar".equals(accion)) {
-                Long id = Long.parseLong(request.getParameter("id"));
-                Optional<Turno> turnoOpt = controlLogica.traerTurno(id);
-                if (turnoOpt.isPresent()) {
+            switch (accion) {
+                case "crear":
+                    // Redirigir al formulario de creación con la lista de ciudadanos
                     List<Ciudadano> listaCiudadanos = controlLogica.traerCiudadanos();
                     request.setAttribute("listaCiudadanos", listaCiudadanos);
-                    request.setAttribute("turno", turnoOpt.get());
                     request.getRequestDispatcher("crearTurno.jsp").forward(request, response);
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Turno no encontrado");
-                }
-            } else if ("eliminar".equals(accion)) {
-                Long id = Long.parseLong(request.getParameter("id"));
-                controlLogica.eliminarTurno(id);
-                response.sendRedirect("TurnoSv?accion=listar");  // Asegura que la lista de turnos se actualice después de eliminar
+                    break;
+                case "listar":
+                    // Listar todos los turnos
+                    List<Turno> listaTurnos = controlLogica.traerTurnos();
+                    request.setAttribute("listaTurnos", listaTurnos);
+                    request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
+                    break;
+                case "listarPorFecha":
+                    // Listar turnos por una fecha específica
+                    String fechaString = request.getParameter("fecha");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date fecha = dateFormat.parse(fechaString);
+                    List<Turno> listaTurnosPorFecha = controlLogica.traerTurnosPorFecha(fecha);
+                    request.setAttribute("listaTurnos", listaTurnosPorFecha);
+                    request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
+                    break;
+                case "listarPorFechaYEstado":
+                    // Listar turnos por una fecha específica y estado
+                    String fechaStr = request.getParameter("fecha");
+                    String estadoString = request.getParameter("estado");
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date fechaEstado = df.parse(fechaStr);
+                    Turno.Atendido estado = Turno.Atendido.valueOf(estadoString);
+                    List<Turno> listaTurnosPorFechaYEstado = controlLogica.traerTurnosPorFechaYEstado(fechaEstado, estado);
+                    request.setAttribute("listaTurnos", listaTurnosPorFechaYEstado);
+                    request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
+                    break;
+                case "editar":
+                    // Redirigir al formulario de edición con datos del turno pre-rellenados
+                    Long id = Long.parseLong(request.getParameter("id"));
+                    Optional<Turno> turnoOpt = controlLogica.traerTurno(id);
+                    if (turnoOpt.isPresent()) {
+                        Turno turno = turnoOpt.get();
+                        List<Ciudadano> ciudadanos = controlLogica.traerCiudadanos();
+                        request.setAttribute("listaCiudadanos", ciudadanos);
+                        request.setAttribute("turno", turno);
+                        request.getRequestDispatcher("crearTurno.jsp").forward(request, response);
+                    } else {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Turno no encontrado");
+                    }
+                    break;
+                case "eliminar":
+                    // Eliminar un turno y redirigir a la lista de turnos
+                    Long turnId = Long.parseLong(request.getParameter("id"));
+                    controlLogica.eliminarTurno(turnId);
+                    response.sendRedirect("TurnoSv?accion=listar");
+                    break;
+                default:
+                    // Parámetro de acción no válido
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida");
+                    break;
             }
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
@@ -77,16 +97,14 @@ public class TurnoSv extends HttpServlet {
         String accion = request.getParameter("accion");
         try {
             if ("crear".equals(accion)) {
+                // Crear un nuevo turno
                 Long ciudadanoId = Long.parseLong(request.getParameter("ciudadanoId"));
                 String numero = request.getParameter("numero");
                 String fechaString = request.getParameter("fecha");
                 String descripcion = request.getParameter("descripcion");
                 String atendido = request.getParameter("atendido");
 
-                if (Optional.ofNullable(numero).orElse("").isEmpty() ||
-                        Optional.ofNullable(fechaString).orElse("").isEmpty() ||
-                        Optional.ofNullable(descripcion).orElse("").isEmpty() ||
-                        Optional.ofNullable(atendido).orElse("").isEmpty()) {
+                if (numero.isEmpty() || fechaString.isEmpty() || descripcion.isEmpty() || atendido.isEmpty()) {
                     throw new IllegalArgumentException("Todos los campos son obligatorios.");
                 }
 
@@ -104,6 +122,7 @@ public class TurnoSv extends HttpServlet {
                 request.setAttribute("listaTurnos", listaTurnos);
                 request.getRequestDispatcher("listarTurnos.jsp").forward(request, response);
             } else if ("editar".equals(accion)) {
+                // Editar un turno existente
                 Long id = Long.parseLong(request.getParameter("id"));
                 Optional<Turno> turnoOpt = controlLogica.traerTurno(id);
                 if (turnoOpt.isPresent()) {
@@ -113,10 +132,7 @@ public class TurnoSv extends HttpServlet {
                     String descripcion = request.getParameter("descripcion");
                     String atendido = request.getParameter("atendido");
 
-                    if (Optional.ofNullable(numero).orElse("").isEmpty() ||
-                            Optional.ofNullable(fechaString).orElse("").isEmpty() ||
-                            Optional.ofNullable(descripcion).orElse("").isEmpty() ||
-                            Optional.ofNullable(atendido).orElse("").isEmpty()) {
+                    if (numero.isEmpty() || fechaString.isEmpty() || descripcion.isEmpty() || atendido.isEmpty()) {
                         throw new IllegalArgumentException("Todos los campos son obligatorios.");
                     }
 
@@ -147,7 +163,6 @@ public class TurnoSv extends HttpServlet {
         }
     }
 }
-
 
 
 

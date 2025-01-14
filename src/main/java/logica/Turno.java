@@ -16,12 +16,13 @@ public class Turno implements Serializable {
     private Long id;
     private String numero;
     private Date fecha;
-    private String descripcion;  // Asegurando que la columna exista
+    private String descripcion;
     private Atendido atendido;
 
     @ManyToOne
     private Ciudadano ciudadano;
 
+    // Enumeración para el estado de atención del turno
     public enum Atendido {
         SI, NO, ATENDIDO, EN_ESPERA
     }
@@ -76,5 +77,4 @@ public class Turno implements Serializable {
         this.ciudadano = ciudadano;
     }
 }
-
 
